@@ -2,7 +2,7 @@ fn bitvec_to_int(v: &Vec<u32>) -> u32 {
     v.iter().fold(0, |result, &bit| (result << 1) ^ bit)
 }
 
-fn main() {
+fn p1() {
     let binary_nums = include_str!("../input").lines().collect::<Vec<_>>();
     let count_nums = binary_nums.len();
     let (gam_v, eps_v) = binary_nums
@@ -43,6 +43,9 @@ fn main() {
     let gam = bitvec_to_int(&gam_v);
     let eps = bitvec_to_int(&eps_v);
     println!("{}", gam * eps);
+}
+fn main() {
+    p1();
 }
 
 #[cfg(test)]
