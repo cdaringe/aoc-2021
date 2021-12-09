@@ -1,0 +1,3 @@
+(test
+ (name day4_ocaml)
+ (libraries day4_ocaml))

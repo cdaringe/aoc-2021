@@ -1,0 +1,5 @@
+(library
+ (name day4_ocaml)
+ (libraries containers util ppx_string ppx_deriving)
+ (preprocess
+  (pps ppx_string ppx_deriving.show)))
