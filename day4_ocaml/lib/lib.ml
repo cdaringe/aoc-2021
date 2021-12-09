@@ -41,35 +41,40 @@ module Board = struct
     let is_winning_arr = for_all snd in
     exists is_winning_arr b || exists is_winning_arr (transpose b)
 
+  let find_wini scores b =
+    CCList.find_mapi
+      (fun i num ->
+        score b num;
+        if check_win b then Some i else None)
+      scores
+
   module Parser = struct
     open Util.InputParse
 
-    let from_list (board_lists : int list list list) : t list =
-      let to_score_row nums =
-        Array.(of_list nums |> map (fun v -> (v, false)))
-      in
-      let to_score_board board_list =
-        List.map to_score_row board_list |> Array.of_list
-      in
-      List.map to_score_board board_lists
+    let init_cell v = (v, false)
 
-    let chunk_boards_lines boards_lines =
+    let from_list =
+      let open Array in
+      let to_row = of_list >> map init_cell in
+      let to_board = List.map to_row >> of_list in
+      List.map to_board
+
+    let chunk_boards_lines lines =
       let open CCList in
-      let rec inner lines =
+      let rec fold_boards lines =
         let board_lines, rest = take_drop 5 lines in
         let raw_board = map line_to_ints board_lines in
-        raw_board :: (if has_length rest then inner rest else [])
+        raw_board :: (if has_length rest then fold_boards rest else [])
       in
-      inner boards_lines
+      fold_boards lines
 
-    let of_lines lines : int list * t list =
-      let num_str, boards_lines =
-        match List.filter_map get_non_empty_str_opt lines with
-        | nums :: boards_lines -> (nums, boards_lines)
-        | _ -> failwith "invalid input"
-      in
-      ( num_str |> String.split_on_char ',' |> strings_to_ints,
-        from_list @@ chunk_boards_lines boards_lines )
+    let of_lines lines =
+      match List.filter_map get_non_empty_str_opt lines with
+      | num_line :: boards_lines ->
+          let nums = num_line |> String.split_on_char ',' |> strings_to_ints in
+          let boards = from_list @@ chunk_boards_lines boards_lines in
+          (nums, boards)
+      | _ -> failwith "invalid input"
   end
 end
 
@@ -79,9 +84,8 @@ module Solver = struct
     let lines = Util.InputParse.read_lines filename in
     let nums, boards = Board.Parser.of_lines lines in
     let winner_opt =
-      find_mapi
-        (fun i num ->
-          print_endline [%string "trying num %{num#Int} @ index %{i#Int}"];
+      find_map
+        (fun num ->
           let score_board b = Board.score b num in
           let with_last_num b = (b, num) in
           iter score_board boards;
@@ -90,6 +94,22 @@ module Solver = struct
     in
     let board, last_num = CCOption.get_exn_or "no winner" winner_opt in
     let miss_sum = Board.sum_misses board in
+    print_endline @@ string_of_int (miss_sum * last_num)
+
+  let solve2 filename =
+    let lines = Util.InputParse.read_lines filename in
+    let nums, boards = Board.Parser.of_lines lines in
+    let as_board_windex b = (b, Board.find_wini nums b) in
+    let board_windex_pairs = List.map as_board_windex boards in
+    let sort_ascending = List.sort (fun (_, a) (_, b) -> b - a) in
+    let remove_unsolved =
+      CCList.filter_map (function _, None -> None | b, Some i -> Some (b, i))
+    in
+    let last_winning_board, ith_num =
+      board_windex_pairs |> remove_unsolved |> sort_ascending |> List.hd
+    in
+    let miss_sum = Board.sum_misses last_winning_board in
+    let last_num = List.nth nums ith_num in
     print_endline @@ string_of_int last_num;
     print_endline @@ string_of_int (miss_sum * last_num)
 end
