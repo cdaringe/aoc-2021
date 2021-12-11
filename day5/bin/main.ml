@@ -1,3 +1,3 @@
 open Day5
 
-let () = Solver.solve "./day5/input"
+let () = Solver.solve2 "./day5/input"
