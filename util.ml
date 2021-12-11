@@ -18,6 +18,8 @@ module InputParse = struct
         []
     in
     loop ()
+
+  let parse_lines filename parser = parser @@ read_lines filename
 end
 
 let has_length l = List.length l > 0
