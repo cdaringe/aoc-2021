@@ -1,0 +1,5 @@
+(library
+ (name day6)
+ (libraries util containers ppx_string ppx_deriving)
+ (preprocess
+  (pps ppx_string ppx_deriving.show ppx_deriving.ord ppx_deriving.eq)))
