@@ -55,14 +55,14 @@ module Solver = struct
     List.map parse_line lines
 
   let solve filename =
-    Util.InputParse.parse_lines filename parse
+    Util.Input.parse_lines filename parse
     |> Line.interpolate_points ~filter_non_rectilinear:true
     |> Terrain.plot
     |> Terrain.count_if (fun _ num_vents -> num_vents > 1)
     |> print_int
 
   let solve2 filename =
-    Util.InputParse.parse_lines filename parse
+    Util.Input.parse_lines filename parse
     |> Line.interpolate_points |> Terrain.plot
     |> Terrain.count_if (fun _ num_vents -> num_vents > 1)
     |> print_int

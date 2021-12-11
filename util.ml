@@ -1,6 +1,6 @@
 let ( >> ) f g x = f x |> g
 
-module InputParse = struct
+module Input = struct
   let split_whitespace = Str.(split (regexp "[ \t]+"))
 
   let strings_to_ints = CCList.(map int_of_string)

@@ -49,7 +49,7 @@ module Board = struct
       scores
 
   module Parser = struct
-    open Util.InputParse
+    open Util.Input
 
     let init_cell v = (v, false)
 
@@ -81,7 +81,7 @@ end
 module Solver = struct
   let solve filename =
     let open CCList in
-    let lines = Util.InputParse.read_lines filename in
+    let lines = Util.Input.read_lines filename in
     let nums, boards = Board.Parser.of_lines lines in
     let winner_opt =
       find_map
@@ -97,7 +97,7 @@ module Solver = struct
     print_endline @@ string_of_int (miss_sum * last_num)
 
   let solve2 filename =
-    let lines = Util.InputParse.read_lines filename in
+    let lines = Util.Input.read_lines filename in
     let nums, boards = Board.Parser.of_lines lines in
     let as_board_windex b = (b, Board.find_wini nums b) in
     let board_windex_pairs = List.map as_board_windex boards in
