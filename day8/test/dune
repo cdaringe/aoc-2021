@@ -1,0 +1,3 @@
+(test
+ (name day8)
+ (libraries day8))
