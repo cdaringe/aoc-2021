@@ -1,5 +1,11 @@
 let ( >> ) f g x = f x |> g
 
+module CDOpt = struct
+  module Syntax = struct
+    let ( let* ) o f = match o with None -> None | Some x -> f x
+  end
+end
+
 module Input = struct
   let split_whitespace = Str.(split (regexp "[ \t]+"))
 

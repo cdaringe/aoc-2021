@@ -1,0 +1,4 @@
+(executable
+ (name main)
+ (libraries day9)
+ (modes native byte))
